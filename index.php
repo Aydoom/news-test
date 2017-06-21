@@ -3,5 +3,8 @@
 
 require_once "config/bootstrap.php";
 
+// create tables into mysql
+//require VENDOR . "php-mysql-migration/index.php";
+
 // run APP
-require VIEW . "index.php";
+require APP . "router.php";

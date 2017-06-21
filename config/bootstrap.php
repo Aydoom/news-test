@@ -1,11 +1,14 @@
 <?php
-session_start();
-
-define ("DS", DIRECTORY_SEPARATOR);
+define("DS", DIRECTORY_SEPARATOR);
 
 define("ROOT", realpath(__DIR__ . DS . "..") . DS);
     define("CONFIG", ROOT . "config" . DS);
-    define("VIEW", ROOT . "view" . DS);
+    define("APP", ROOT . "app" . DS);
+        define("CONTROLLER", APP . "controller" . DS);
+        define("MODEL", APP . "model" . DS);
+        define("VIEW", APP . "view" . DS);
+    define("CORE", ROOT . "core" . DS);
+    define("VENDOR", ROOT . "vendor" . DS);
     
 require_once CONFIG . "autoloader.php";
 require_once CONFIG . "basic.php";
@@ -15,7 +18,7 @@ function config() {
     if ($_SERVER['HTTP_HOST'] === 'localhost') {
         return array(
             'host' 	=> 'localhost',
-            'dbname' 	=> 'ibdl',
+            'dbname' 	=> 'news',
             'user'	=> 'root',
             'password'	=> '',
             'port'	=> 3306,
