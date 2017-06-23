@@ -7,6 +7,7 @@ define("ROOT", realpath(__DIR__ . DS . "..") . DS);
         define("CONTROLLER", APP . "controller" . DS);
         define("MODEL", APP . "model" . DS);
         define("VIEW", APP . "view" . DS);
+            define("ELEMENT", VIEW . "element" . DS);
     define("CORE", ROOT . "core" . DS);
     define("VENDOR", ROOT . "vendor" . DS);
     

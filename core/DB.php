@@ -63,20 +63,13 @@ class DB extends \PDO{
      */
     public function find($conditions = []) {
         $query = $this->prepare(Sql::getSelect($this->table, $conditions));
-        $cond = (empty($conditions['where'])) ? [] : array_map(
-                    function ($item) {
-                        return trim($item, "<>=!");   
-                    }, $conditions['where']);
-        
-        $query->execute($cond);
-
-        if (isset($conditions['left join'])) {
-            $result = Stmt::fetchAll($query);
-        } else {
-            $result = $query->fetchAll(\PDO::FETCH_ASSOC);
+        if (!empty($conditions['where'])) {
+            foreach ($conditions['where'] as $field => $value) {
+                $cond[":$field"] = trim(str_replace("LIKE", "", $value), "<>=!");
+            }
         }
-
-        return $result;
+        $query->execute($cond);
+        return $query->fetchAll(\PDO::FETCH_ASSOC);
     }
     
     /**

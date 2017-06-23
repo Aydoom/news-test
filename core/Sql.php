@@ -92,9 +92,13 @@ class Sql {
     static public function getWhere($conditions) {
         $handler = function ($field, $val, $glue, $hasGlue) {
             $matches = [];
-            preg_match_all('/([=!<>]+)(.+)/u', "=$val", $matches);
-            $sign = (strlen($matches[1][0]) > 1) ? ltrim($matches[1][0], "=") 
-                    : $matches[1][0];
+            if (substr_count($val, "LIKE") === 1 || substr_count($val, "%") > 0) {
+                $sign = "LIKE";
+            } else {
+                preg_match_all('/([=!<>]+)(.+)/u', "=$val", $matches);
+                $sign = (strlen($matches[1][0]) > 1) ? ltrim($matches[1][0], "=") 
+                        : $matches[1][0];
+            }
             $echoGlue = ($hasGlue) ? strtoupper($glue) : "";
                                                             
             return " $echoGlue `" . self::$table . "`.`$field` $sign :$field";             

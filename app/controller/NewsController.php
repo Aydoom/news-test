@@ -7,21 +7,30 @@ use core\request;
 
 class NewsController extends Controller {
 	
-    public function index($page = 1) {
+    public function index() {
     }
      
      public function show(){
         $page = filter_input(INPUT_GET, 'page', FILTER_SANITIZE_NUMBER_INT);
+        $keyword = filter_input(INPUT_GET, 'keyword', FILTER_SANITIZE_STRING);
+        $search = filter_input(INPUT_GET, 'search', FILTER_SANITIZE_STRING);
+        
         if (empty($page)) {
             $page = 1;
         }
         
         $news = $this->loadModel('news');
-
-        $articles = $news->find([
-            'limit' => ($page - 1) * 20 . ", 20", 
+        $conditions = [
+            'limit' => ($page - 1) * 20 . ", 20",
             'order by' => ['desc' => 'registerDate'],
-        ]);
+        ];
+        if (!empty($keyword)) {
+            $conditions['where'] = ['keywords' => '%' . $keyword . ';%'];
+        }
+        if (!empty($search)) {
+            $conditions['where'] = ['title' => '%' . $search . '%'];
+        }
+        $articles = $news->find($conditions);
         
         foreach ($articles as $key => $value) {
             $articles[$key]['keywords'] = explode(";", $value['keywords']);

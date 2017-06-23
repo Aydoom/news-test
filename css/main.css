@@ -2,5 +2,63 @@
     Created on : 20.06.2017, 22:43:04
     Author     : Aydoom
 */
-#list-wrapper{
+ul li {
+    list-style-type: none;
+}
+
+.panel-msg{
+    display: block;
+    position: fixed;
+    left: 0;
+    width: 60%;
+    margin: 2rem 20%;
+    background-color: #fff;
+    border-radius: 4px;
+    border: #337ab7 2px solid;
+    z-index: 10;
+}
+.panel-header {
+    background-color: #337ab7;
+    border-color: #337ab7;
+    color: #fff;
+    padding: 10px 15px 0px;
+}
+.panel-header .glyphicon:hover {
+    cursor: pointer;
+    color: #f00;
+}
+.panel-form {
+    padding: 10px 15px 0px;
+}
+
+.shadow {
+    display: block;
+    position: fixed;
+    top:0;
+    left:0;
+    background-color: #dcdcdc;
+    width: 100%;
+    height: 100%;
+    opacity: 0.5;
+    z-index: 5;
+}
+.container-shadow {
+    height: 100%;
+    overflow: hidden;
+}
+
+.panel-news{
+    margin-top: 2rem;
+    padding: 10px 15px;
+}
+.panel-news .row-keywords {
+    margin-bottom: 5px;
+}
+.panel-news .label {
+    margin-right: 5px;
+}
+
+.panel-news .label:hover {
+    cursor: pointer;
+    background-color: #337ab7;
 }
