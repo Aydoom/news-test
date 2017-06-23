@@ -1,5 +1,5 @@
 <?php 
-use core\App as App;
+use core\App;
 
 $router = new core\Router();
 
@@ -8,9 +8,21 @@ $router
         $app = new App();
         $app->run("news", "index");
     })
-    ->get('/:controller/:action', function($controller, $action){
+    ->get('/news/show', function(){
         $app = new App();
-        $app->run($controller, $action);
+        $app->run("news", "show");
+    })
+    ->post('/news/update', function(){
+        $app = new App();
+        $app->run("news", "update");
+    })
+    ->put('/news/create', function(){
+        $app = new App();
+        $app->run("news", "create");
+    })
+    ->delete('/news/delete', function(){
+        $app = new App();
+        $app->run("news", "delete");
     })
     ->any('*', function() {
         $app = new App();

@@ -7,8 +7,8 @@ namespace core;
  *
  * @author Aydoom
  */
-class Router
-{
+class Router {
+    
     static public $request;
     static public $method;
     
@@ -17,8 +17,6 @@ class Router
     
     public $paths = [];
     public $args = [];
-    
-    public $access = true;
     
     static public $exit = false;
     
@@ -39,22 +37,6 @@ class Router
     
     /**
      * 
-     * @param type $action
-     * @param type $ok
-     * @return $this
-     */
-    public function access($action, $ok = true) {
-        if($ok) {
-            $this->access = call_user_func($action);
-        } else {
-            $this->access = !call_user_func($action);
-        }
-        
-        return $this;
-    }
-    
-    /**
-     * 
      * @param type $route
      * @param type $action
      * @return $this
@@ -71,16 +53,10 @@ class Router
      * @param type $action
      * @return $this
      */
-    public function ajax($route, $action) {
-        if (self::$method === 'ajax') {
+    public function delete($route, $action) {
+        if (self::$method === 'delete') {
             $this->run($route, $action);
         }
-        
-        return $this;
-    }
-    
-    public function start() {
-        $this->access = true;
         
         return $this;
     }
@@ -93,28 +69,15 @@ class Router
 
         if (count($paths) !== count($this->paths)) {
             return false;
+        } else {
+            foreach ($paths as $key => $path) {
+               if ($path != $this->paths[$key]) {
+                   return false;
+               }
+           }           
         }
         
-        foreach ($paths as $key => $path) {
-            if (substr_count($path, ":") === 1) {
-                $name = ltrim($path, ":");
-                $this->args[$name] = $this->paths[$key];
-            } elseif ($path != $this->paths[$key]) {
-                return false;
-            }
-        }
-
         return true;
-    }
-    
-    /**
-     * 
-     * @param type $baseDir
-     */
-    public function group($baseDir) {
-        $this->baseDir = $baseDir;
-        
-        return $this;
     }
     
     /**
@@ -141,14 +104,6 @@ class Router
         self::$rootDir = implode("/", array_slice(explode("/", $scriptName), 0, -1));
         
         return self::$rootDir;
-    }
-    
-    public function middleware($route, $middleware, $action, $ok = true) {
-        if(call_user_func($middleware) === $ok) {
-            $this->run($route, $action);
-        }
-        
-        return $this;
     }
    
     /**
@@ -186,7 +141,7 @@ class Router
      * @return $this
      */
     public function run($route, $action) {
-        if (self::$exit || !$this->access) {
+        if (self::$exit) {
             return $this;
         } elseif ($route === '*' || $this->compareRoute($route)) {
             call_user_func_array($action, $this->args);
