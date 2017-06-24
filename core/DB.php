@@ -90,5 +90,26 @@ class DB extends \PDO{
 
         return $this->lastInsertId();
     }
+    
+    /**
+     * 
+     * @param type $data
+     * @return type
+     */
+    public function update($data) {
+        $sql = "UPDATE `" . $this->config['dbname'] . '`.`' . $this->table . "` SET";
+        foreach ($data as $field => $value) {
+            $sql.= " $field=:$field";
+        }
+        $query = $this->prepare($sql . ' WHERE id=:id');
+        
+        $query->execute($data);
+        pr($query);
+        if(!$query) {
+            pr($this->errorInfo());
+        }
+
+        return $this->lastInsertId();
+    }
 
 }

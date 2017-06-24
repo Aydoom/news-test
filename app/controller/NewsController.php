@@ -42,7 +42,7 @@ class NewsController extends Controller {
     /**
      * Add News
      */
-    public function add() {
+    public function create() {
         $session = $this->loadModel('session');
         $error = '';
         if ($this->isPut() && $session->validation() && $session->fileValidation()) {
@@ -66,7 +66,15 @@ class NewsController extends Controller {
 
 
     public function update() {
-        
+        $params = json_decode(file_get_contents('php://input'),true);
+        $data = $params['params']['form'];
+        pr($data);
+        $news = $this->loadModel('news');
+        if ($news->save($data)) {
+            return 'ok';
+        } else {
+            return 'error';
+        }
     }
 
 

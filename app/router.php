@@ -8,19 +8,19 @@ $router
         $app = new App();
         $app->run("news", "index");
     })
-    ->get('/news/show', function(){
+    ->get('/news', function(){
         $app = new App();
         $app->run("news", "show");
     })
-    ->post('/news/update', function(){
+    ->post('/news', function(){
         $app = new App();
         $app->run("news", "update");
     })
-    ->put('/news/create', function(){
+    ->put('/news', function(){
         $app = new App();
         $app->run("news", "create");
     })
-    ->delete('/news/delete', function(){
+    ->delete('/news', function(){
         $app = new App();
         $app->run("news", "delete");
     })

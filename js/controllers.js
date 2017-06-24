@@ -19,8 +19,7 @@ newsApp.controller('newsCtrl', function($scope, $http){
     
     
     $scope.loadNews = function() {
-        console.log($scope.keyword);
-        $http.get('news/show', {
+        $http.get('news', {
             params:{
                 page: $scope.page,
                 keyword: $scope.keyword,
@@ -41,6 +40,50 @@ newsApp.controller('newsCtrl', function($scope, $http){
         });
     };
     
+    $scope.createNews = function() {
+        $http.put('news', {
+            params:{
+                form: $scope.form
+            }
+            }).then(function(){
+                /*$scope.data.data = data.data;*/
+                $scope.page = 1;
+                $scope.hideForm();
+                $scope.loadNews();
+            }, function(data){
+        });
+    };
+    
+    $scope.updateNews = function(index) {
+        $scope.form.keywords = $scope.form.keywords_str.split(",")
+                        .map(function(s) { return s.trim(); });
+        delete $scope.form.keywords_str;
+        console.log($scope.form);
+        
+        $http.post('news', {
+            params:{
+                form: $scope.form
+            }
+            }).then(function(data){
+                /*$scope.data.data = data.data;*/
+                console.log(data.data);
+                $scope.articles[index] = $scope.form;
+                $scope.hideForm();
+            }, function(data){
+        });
+    };
+    
+    $scope.deleteNews = function(id, index) {
+        $http.delete('news', {
+            params:{
+                id: id
+            }
+            }).then(function(){
+                /*$scope.data.data = data.data;*/
+                delete $scope.articles[index];
+            }, function(data){
+        });
+    };
     
     $scope.loadMore = function() {
 
@@ -56,11 +99,14 @@ newsApp.controller('newsCtrl', function($scope, $http){
     
     $scope.changeNews = function(index) {
         $scope.form = $scope.articles[index];
+        $scope.form.index = index;
+        $scope.form.keywords_str = $scope.form.keywords.join(", ").replace(/((,| )+)$/gi,"");
         $scope.showForm();
         
         $scope.titleForm = "Редактировать новость: \"" 
                 + $scope.articles[index].title + "\"";
         $scope.btnSave = "Изменить";
+        $scope.isShowForm = true;
     };
     
     

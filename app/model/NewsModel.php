@@ -19,7 +19,7 @@ class NewsModel extends Model {
     ];
     
     public function save($data) {
-        
+        pr(__METHOD__);
         return parent::save([
             'name'          => $data['name'],
             'registerDate'  => date("Y-m-d H:i:s")
