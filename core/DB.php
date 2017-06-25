@@ -1,18 +1,6 @@
 <?php
-
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 namespace core;
 
-/**
- * Description of DB
- *
- * @author Aydoom
- */
 class DB extends \PDO{
 
     public $table;
@@ -34,27 +22,17 @@ class DB extends \PDO{
         try {
             parent::__construct($dns, $config['user'], $config['password'], $options);
         } catch (PDOException $e) {
-            die('Подключение не удалось: ' . $e->getMessage());
+            Error::msg('Подключение не удалось: ' . $e->getMessage());
         }        
     }
+
     
-    /**
-     * 
-     * @param type $conditions
-     * @return type
-     */
-    public function count($conditions = []) {
-        $sql = 'SELECT COUNT(*) FROM `' . $this->table . '`';
-        $sql.= Sql::getConditions($conditions);
-        
-        $query = $this->prepare($sql);
-        $cond = (empty($conditions['where'])) ? [] : $conditions['where'];
-        $query->execute($cond);
-        $output = $query->fetchAll();
+    public function delete($id) {
+        $query = $this->prepare("DELETE FROM `" . $this->table . "` WHERE id = ?");
+        $result = $query->execute([$id]); 
 
-        return $output[0][0];
+        return $result;
     }
-
     
     /**
      * 
@@ -69,33 +47,26 @@ class DB extends \PDO{
             }
         }
         $query->execute($cond);
+        
         return $query->fetchAll(\PDO::FETCH_ASSOC);
     }
+
     
-    /**
-     * 
-     * @param type $data
-     * @return type
-     */
     public function insert($data) {
         $query = $this->prepare("INSERT INTO `" . $this->config['dbname'] . '`.`'
                     . $this->table . "` " . "("
                     . implode(", ", array_keys($data)) . ")"
                     . " VALUES(:" . implode(", :", array_keys($data)) . ")");
        
-        $query->execute($data);
-        if(!$query) {
-            pr($this->errorInfo());
+        $result = $query->execute($data);
+        if(!$result) {
+            Error::msg($this->errorInfo());
         }
 
-        return $this->lastInsertId();
+        return ($result);
     }
     
-    /**
-     * 
-     * @param type $data
-     * @return type
-     */
+
     public function update($data) {
         $path = [];
         foreach ($data as $field => $value) {
@@ -104,16 +75,14 @@ class DB extends \PDO{
 
         $sql = "UPDATE `" . $this->config['dbname'] . '`.`' . $this->table
                 . "` SET " . implode(", ", $path);
-
         $query = $this->prepare($sql . ' WHERE id=:id');
         
-        $query->execute($data);
-
-        if(!$query) {
-            pr($this->errorInfo());
+        $result = $query->execute($data);
+        if(!$result) {
+            Error::msg($this->errorInfo());
         }
 
-        return (!empty($query));
+        return ($result);
     }
 
 }

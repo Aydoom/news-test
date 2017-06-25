@@ -1,38 +1,42 @@
 <?php
-
 namespace app\controller;
-
-use core\controller;
-use core\request;
+use core\Controller;
 
 class NewsController extends Controller {
-
+    
+    public $view = 'news/show';
+    public $newsModel;
+    
+    
+    public function before() {
+        $this->newsModel = $this->loadModel('news');
+    }
+    
+    
     public function index() {
-        
+        $this->view = 'news/index';
     }
 
+
     public function show() {
-        $page = filter_input(INPUT_GET, 'page', FILTER_SANITIZE_NUMBER_INT);
-        $keyword = filter_input(INPUT_GET, 'keyword', FILTER_SANITIZE_STRING);
-        $search = filter_input(INPUT_GET, 'search', FILTER_SANITIZE_STRING);
+        $countNews = $this->_getParams('countNews');
+        $keyword = $this->_getParams('keyword');
+        $search = $this->_getParams('search');
 
-        if (empty($page)) {
-            $page = 1;
-        }
-
-        $news = $this->loadModel('news');
+        $start = (empty($countNews)) ? 0 : $countNews;
         $conditions = [
-            'limit' => ($page - 1) * 20 . ", 20",
+            'limit' => $start . ", 20",
             'order by' => ['desc' => 'registerDate'],
         ];
+        
         if (!empty($keyword)) {
             $conditions['where'] = ['keywords' => '%' . $keyword . ',%'];
         }
         if (!empty($search)) {
             $conditions['where'] = ['title' => '%' . $search . '%'];
         }
-        $articles = $news->find($conditions);
 
+        $articles = $this->newsModel->find($conditions);
         foreach ($articles as $key => $value) {
             $articles[$key]['keywords'] = explode(",", $value['keywords']);
         }
@@ -40,53 +44,63 @@ class NewsController extends Controller {
         $this->_set('articles', json_encode($articles));
     }
 
-    /**
-     * Add News
-     */
+
     public function create() {
-        $session = $this->loadModel('session');
-        $error = '';
-        if ($this->isPut() && $session->validation() && $session->fileValidation()) {
-            if ($session->save(Request::get("sessionForm"))) {
-                $files = new File();
-                $files->getFromForm("sessionForm", 'files', $session->lastId);
-                if ($files->save(FILES)) {
-                    $pars = new iBDL\Plugins\Sensor\Parser();
-                    $file = $this->loadModel('file');
-                    $file->save($files->getAll(), $session->lastId);
-                }
-
-                $this->redirect("session/index");
+        $data = $this->_getParams('form');
+        
+        if ($this->newsModel->validate($data)) {
+            if ($this->newsModel->save($data)) {
+                $this->_set('articles', json_encode($data));
+            } else {
+                $this->_error('Сохранить новость не удалось');
             }
+        } else {
+            $this->_error('Не все поля заполнены');
         }
-
-        $this->_set('title', 'Создание сессии' . $error);
     }
+    
 
     public function update() {
-        $params = json_decode(file_get_contents('php://input'), true);
-        $data = $params['params']['form'];
-
-        $news = $this->loadModel('news');
-        if ($news->save($data)) {
-            $this->view = 'news/show';
-            $this->_set('articles', json_encode($data));
+        $data = $this->_getParams('form');
+        
+        if ($this->newsModel->validate($data)) {
+            if ($this->newsModel->save($data)) {
+                $this->_set('articles', json_encode($data));
+            } else {
+                $this->_error('Изменить новость не удалось');
+            } 
         } else {
-            return 'error';
+            $this->_error('Не все поля заполнены');
         }
     }
 
-    public function remove() {
+
+    public function delete() {
+        $id = $this->_getParams('id');
         
+        if ($this->newsModel->delete($id)) {
+            $this->_set('articles', true);
+        } else {
+            $this->_error('Удалить не получилось');
+        }
+    }
+    
+ 
+    private function _getParams($name) {
+        switch ($name) {
+            case in_array($name, ['id, countNews']):
+                return filter_input(INPUT_GET, $name, FILTER_SANITIZE_NUMBER_INT);
+            case in_array($name, ['keyword, search']):
+                return filter_input(INPUT_GET, $name, FILTER_SANITIZE_STRING);
+            default:            
+                $params = json_decode(file_get_contents('php://input'), true);
+                return $params['params'][$name];
+        }
     }
 
-    public function view($id) {
-        $model = $this->loadModel('session')->belongTo('file');
-
-        $session = $model->find([
-            'where' => ['id_user' => Auth::$user['id'], 'id' => $id]
-        ]);
-        $this->_set('session', $session[0]);
+    
+    private function _error($msg) {
+        $this->view = 'news/error';
+        $this->_set('error', $msg);
     }
-
 }

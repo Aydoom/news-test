@@ -40,6 +40,8 @@ class App {
         self::$actionUri = DS . strtolower($controller) . DS . strtolower($action) . DS;
         $className = 'app\controller\\' . ucfirst($controller) . "Controller";
         $this->controller = new $className($action);
+        
+        $this->controller->before();
         if(is_null($param)) {
             $this->controller->$action();
         } else {

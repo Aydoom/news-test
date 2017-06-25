@@ -31,7 +31,7 @@ class NewsTable extends \PMMigration\Core\DefTable {
         for ($i = 1; $i < 81; $i++) {
             $this->setInsert($fields, 
                     [$this->getTitle(), $this->getKeywords(), $this->getText(),
-                        '2017-06-26 22:22:16']);
+                        '2017-06-24 22:22:16']);
         }
     }
     

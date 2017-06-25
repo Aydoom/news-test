@@ -16,11 +16,11 @@
                     <form>
                         <div class="form-group">
                             <label for="title">Заголовок</label>
-                            <input type="text" class="form-control" id="title" name="title" ng-model="form.title">
+                            <input type="text" class="form-control" id="title" name="title" ng-model="form.title" required>
                         </div>
                         <div class="form-group">
                             <label for="shortText">Краткое описание</label>
-                            <textarea class="form-control" id="shortText" rows="3" ng-model="form.shortText"></textarea>
+                            <textarea class="form-control" id="shortText" rows="3" ng-model="form.shortText" required></textarea>
                         </div>
                         <div class="form-group">
                             <label for="keywords">Ключевые слова (через запятую)</label>

@@ -3,7 +3,6 @@ var newsApp = angular.module('newsApp', ['infinite-scroll']);
 newsApp.controller('newsCtrl', function($scope, $http){
     $scope.data = {};
     
-    $scope.page = 1;
     $scope.download = true;
     $scope.articles = [];
     
@@ -21,19 +20,17 @@ newsApp.controller('newsCtrl', function($scope, $http){
     $scope.loadNews = function() {
         $http.get('news', {
             params:{
-                page: $scope.page,
+                countNews: $scope.articles.length,
                 keyword: $scope.keyword,
                 search: $scope.search
             }
             }).then(function(data){
                 /*$scope.data.data = data.data;*/
-                $scope.page = $scope.page + 1;
 
                 for(var i = 0; i < data.data.length; i++) {
                     var a = data.data[i];
-                    a.date = Date.parse(a.registerDate)
+                    a.dateMS = Date.parse(a.registerDate);
                     $scope.articles.push(a);
-                    console.log(a);
                 }
                 if (data.data.length !== 0) {
                     $scope.download = true;
@@ -52,8 +49,9 @@ newsApp.controller('newsCtrl', function($scope, $http){
             params:{
                 form: $scope.form
             }
-            }).then(function(){
-                $scope.page = 1;
+            }).then(function(data){
+                console.log(data);
+                $scope.articles = [];
                 $scope.hideForm();
                 $scope.loadNews();
             }, function(data){
@@ -77,14 +75,15 @@ newsApp.controller('newsCtrl', function($scope, $http){
         });
     };
     
-    $scope.deleteNews = function(id, index) {
+    $scope.deleteNews = function(index) {
+        id = $scope.articles[index].id;
         $http.delete('news', {
             params:{
                 id: id
             }
-            }).then(function(){
-                /*$scope.data.data = data.data;*/
-                delete $scope.articles[index];
+            }).then(function(data){
+                console.log(data.data);
+                $scope.articles.splice(index, 1);
             }, function(data){
         });
     };

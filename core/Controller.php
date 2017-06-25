@@ -28,6 +28,10 @@ class Controller {
         return $this->data[$name];
     }
 
+    public function before() {
+        
+        return true;
+    }
 
     public function isPost() {
         $method = filter_input(INPUT_POST, 'method', FILTER_DEFAULT);
