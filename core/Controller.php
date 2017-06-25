@@ -17,7 +17,7 @@ class Controller {
         $this->name = substr(strtolower(array_pop(
                                     explode("\\", get_class($this)))), 0 , -10);
         $this->action = $action;
-        $this->view = VIEW . $this->name . DS . $action . ".php";
+        $this->view = $this->name . DS . $action;
     }
 
     public function _set($name, $value) {

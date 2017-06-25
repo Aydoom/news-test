@@ -8,12 +8,12 @@
                             <h2>{{index + 1}} - {{article.title}}</h2>
                         </div>
                         <div class="col-lg-2">
-                            <p>{{article.date}}</p>
+                            <p ng-non-bindable>{{article.date | date:'dd.MMM.y' }}</p>
                         </div>
                     </div>
                     <div class="row row-keywords">
                         <div class="col-lg-12">
-                            <span ng-repeat="keyword in article.keywords" 
+                            <span ng-repeat="keyword in article.keywords track by $index" 
                                   ng-click="findKeyword(keyword)" 
                                   class="label label-default">{{keyword}}</span>
                         </div>

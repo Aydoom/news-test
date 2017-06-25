@@ -25,12 +25,13 @@ class NewsTable extends \PMMigration\Core\DefTable {
     }
     
     public function write() {
-        $fields = ['title', 'keywords', 'shortText'];
+        $fields = ['title', 'keywords', 'shortText', 'registerDate'];
 
         
         for ($i = 1; $i < 81; $i++) {
             $this->setInsert($fields, 
-                    [$this->getTitle(), $this->getKeywords(), $this->getText()]);
+                    [$this->getTitle(), $this->getKeywords(), $this->getText(),
+                        '2017-06-26 22:22:16']);
         }
     }
     
@@ -51,7 +52,7 @@ class NewsTable extends \PMMigration\Core\DefTable {
             }
         }
         
-        return implode(";", $output) . ';';
+        return implode(",", $output) . ',';
     }
     
     public function getTitle() {

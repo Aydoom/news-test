@@ -97,19 +97,23 @@ class DB extends \PDO{
      * @return type
      */
     public function update($data) {
-        $sql = "UPDATE `" . $this->config['dbname'] . '`.`' . $this->table . "` SET";
+        $path = [];
         foreach ($data as $field => $value) {
-            $sql.= " $field=:$field";
+            $path[]= " $field=:$field";
         }
+
+        $sql = "UPDATE `" . $this->config['dbname'] . '`.`' . $this->table
+                . "` SET " . implode(", ", $path);
+
         $query = $this->prepare($sql . ' WHERE id=:id');
         
         $query->execute($data);
-        pr($query);
+
         if(!$query) {
             pr($this->errorInfo());
         }
 
-        return $this->lastInsertId();
+        return (!empty($query));
     }
 
 }

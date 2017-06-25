@@ -123,10 +123,9 @@ class Model {
      */
     public function save($data) {
         $db = new DB(config(), strtolower($this->modelName));
-        pr($data);
-        if (!empty($data['id'])) {
-            $db->update($data);
-            $this->lastId = $id;
+
+        if (!empty($data['id']) && $db->update($data)) {
+            $this->lastId = $data['id'];
         } else {
             $this->lastId = $db->insert($data);
         }

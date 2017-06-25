@@ -68,7 +68,7 @@ class App {
      * function view()
      */
     public function view() {
-        $fileName = $this->controller->view;
+        $fileName = VIEW . $this->controller->view . ".php";
         if (file_exists($fileName)) {
             require $fileName;
         } else {

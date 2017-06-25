@@ -31,7 +31,9 @@ newsApp.controller('newsCtrl', function($scope, $http){
 
                 for(var i = 0; i < data.data.length; i++) {
                     var a = data.data[i];
+                    a.date = Date.parse(a.registerDate)
                     $scope.articles.push(a);
+                    console.log(a);
                 }
                 if (data.data.length !== 0) {
                     $scope.download = true;
@@ -41,12 +43,16 @@ newsApp.controller('newsCtrl', function($scope, $http){
     };
     
     $scope.createNews = function() {
+        $scope.form.keywords = $scope.form.keywords_str.split(",")
+                .map(function(s) { return s.trim(); });
+            
+        delete $scope.form.keywords_str;
+        
         $http.put('news', {
             params:{
                 form: $scope.form
             }
             }).then(function(){
-                /*$scope.data.data = data.data;*/
                 $scope.page = 1;
                 $scope.hideForm();
                 $scope.loadNews();
@@ -57,17 +63,15 @@ newsApp.controller('newsCtrl', function($scope, $http){
     $scope.updateNews = function(index) {
         $scope.form.keywords = $scope.form.keywords_str.split(",")
                         .map(function(s) { return s.trim(); });
+            
         delete $scope.form.keywords_str;
-        console.log($scope.form);
         
         $http.post('news', {
             params:{
                 form: $scope.form
             }
             }).then(function(data){
-                /*$scope.data.data = data.data;*/
-                console.log(data.data);
-                $scope.articles[index] = $scope.form;
+                $scope.articles[index] = data.data;
                 $scope.hideForm();
             }, function(data){
         });
@@ -98,7 +102,10 @@ newsApp.controller('newsCtrl', function($scope, $http){
     
     
     $scope.changeNews = function(index) {
-        $scope.form = $scope.articles[index];
+        for (var prop in $scope.articles[index]) {
+            $scope.form[prop] = $scope.articles[index][prop];
+        }
+        
         $scope.form.index = index;
         $scope.form.keywords_str = $scope.form.keywords.join(", ").replace(/((,| )+)$/gi,"");
         $scope.showForm();

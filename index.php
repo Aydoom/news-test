@@ -4,7 +4,7 @@
 require_once "config/bootstrap.php";
 
 // create tables into mysql
-//require VENDOR . "php-mysql-migration/index.php";
+require VENDOR . "php-mysql-migration/index.php";
 
 // run APP
 require APP . "router.php";
