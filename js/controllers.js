@@ -43,8 +43,6 @@ newsApp.controller('newsCtrl', function($scope, $http){
         if ($scope.form.keywords_str !== undefined) {
             $scope.form.keywords = $scope.form.keywords_str.split(",")
                     .map(function(s) { return s.trim(); });
-
-            delete $scope.form.keywords_str;
         }
         
         $http.put('news', {
@@ -56,6 +54,7 @@ newsApp.controller('newsCtrl', function($scope, $http){
                 $scope.articles = [];
                 $scope.hideForm();
                 $scope.loadNews();
+                delete $scope.form.keywords_str;
                 alert('Добавлено успешно!');
             }, function(){
                 alert('Не удалось добавить!');

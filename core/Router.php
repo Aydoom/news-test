@@ -24,13 +24,17 @@ class Router {
      * Constructor
      */
     public function __construct() {
-        $requestUri = filter_input(INPUT_SERVER, 'REQUEST_URI', 
-                            FILTER_SANITIZE_SPECIAL_CHARS);
+        $requestUri = trim(filter_input(INPUT_SERVER, 'REQUEST_URI', 
+                            FILTER_SANITIZE_SPECIAL_CHARS));
+        if (empty($requestUri)) {
+            $requestUri = "/";
+        }
         $requestDir = $this->getRootDir();
         $lenRequest = strpos($requestUri, $requestDir)
                         - strlen($requestDir) + strlen($requestUri);
+        
         self::$request = substr($requestUri, -$lenRequest);                
-       
+        
         $this->setMethod();
         $this->paths = explode("/", array_shift(explode("?", self::$request)));
     }
@@ -65,8 +69,11 @@ class Router {
      *
     */
     private function compareRoute($route) {
+        if($route !== '/') {
+            $route =ltrim($route, '/');
+        }
         $paths = explode("/", array_shift(explode("?", $route)));
-
+        
         if (count($paths) !== count($this->paths)) {
             return false;
         } else {
@@ -99,9 +106,12 @@ class Router {
      *
     */
     public function getRootDir() {
-        $scriptName = filter_input(INPUT_SERVER, 'SCRIPT_NAME', 
-                                    FILTER_SANITIZE_SPECIAL_CHARS);
+        $scriptName = trim(filter_input(INPUT_SERVER, 'SCRIPT_NAME', 
+                                    FILTER_SANITIZE_SPECIAL_CHARS));
         self::$rootDir = implode("/", array_slice(explode("/", $scriptName), 0, -1));
+        if (empty(self::$rootDir)) {
+            self::$rootDir = "/";
+        }
         
         return self::$rootDir;
     }
