@@ -9,8 +9,7 @@ spl_autoload_register(function($class) {
 		
     if (!file_exists($file)) {
         if ($parts[0] !== 'PMMigration') {
-            echo "file not find: \n";
-            pr($file, false);
+            core\Error::msg("file not find: \n" . $file);
         }
     } else {
         require_once $file;

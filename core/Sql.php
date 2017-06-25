@@ -60,15 +60,7 @@ class Sql {
         
         return implode(" ", $output);
     }
-    
-    static public function getLeftJoin($value) {
-        $output = [];
-        foreach($value['on'] as $one => $two) {
-            $output[] = strtolower($one) . " = " . strtolower($two);
-        }
-        
-        return " LEFT JOIN `" . $value['table'] . "` ON " . implode(", ", $output);
-    }
+
     
     static public function getOrderBy($value) {
         if (!is_array($value)) {
@@ -88,6 +80,7 @@ class Sql {
         
         return "ORDER BY " . implode(", ", $output);
     }    
+    
     
     static public function getWhere($conditions) {
         $handler = function ($field, $val, $glue, $hasGlue) {

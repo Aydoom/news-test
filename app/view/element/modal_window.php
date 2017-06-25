@@ -31,7 +31,8 @@
                                 <button ng-click="form={}" type="submit" class="btn btn-default">Очистить</button>
                             </div>
                             <div class="col-lg-6 text-right">
-                                <button ng-click="updateNews(form.index)" type="submit" class="btn btn-primary">{{btnSave}}</button>
+                                <button ng-click="updateNews(form.index)" type="submit" class="btn btn-primary btn-update">Изменить</button>
+                                <button ng-click="createNews(form.index)" type="submit" class="btn btn-primary btn-create">Сохранить</button>
                             </div>
                         </div>
                     </form>

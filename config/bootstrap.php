@@ -12,9 +12,8 @@ define("ROOT", realpath(__DIR__ . DS . "..") . DS);
     define("VENDOR", ROOT . "vendor" . DS);
     
 require_once CONFIG . "autoloader.php";
-require_once CONFIG . "basic.php";
 
-// Include DB
+// Настройки базы данных
 function config() {
     if ($_SERVER['HTTP_HOST'] === 'localhost') {
         return array(

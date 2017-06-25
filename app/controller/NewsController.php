@@ -3,12 +3,11 @@ namespace app\controller;
 use core\Controller;
 
 class NewsController extends Controller {
-    
-    public $view = 'news/show';
+
     public $newsModel;
     
-    
     public function before() {
+        $this->view = 'news/show';
         $this->newsModel = $this->loadModel('news');
     }
     
@@ -52,10 +51,10 @@ class NewsController extends Controller {
             if ($this->newsModel->save($data)) {
                 $this->_set('articles', json_encode($data));
             } else {
-                $this->_error('Сохранить новость не удалось');
+                $this->_error('Create news failed');
             }
         } else {
-            $this->_error('Не все поля заполнены');
+            $this->_error('Not all fields are filled out');
         }
     }
     
@@ -67,10 +66,10 @@ class NewsController extends Controller {
             if ($this->newsModel->save($data)) {
                 $this->_set('articles', json_encode($data));
             } else {
-                $this->_error('Изменить новость не удалось');
+                $this->_error('Edit news failed');
             } 
         } else {
-            $this->_error('Не все поля заполнены');
+            $this->_error('Not all fields are filled out');
         }
     }
 
@@ -81,16 +80,16 @@ class NewsController extends Controller {
         if ($this->newsModel->delete($id)) {
             $this->_set('articles', true);
         } else {
-            $this->_error('Удалить не получилось');
+            $this->_error('Delete news failed');
         }
     }
     
  
     private function _getParams($name) {
         switch ($name) {
-            case in_array($name, ['id, countNews']):
+            case in_array($name, ['id', 'countNews']):
                 return filter_input(INPUT_GET, $name, FILTER_SANITIZE_NUMBER_INT);
-            case in_array($name, ['keyword, search']):
+            case in_array($name, ['keyword', 'search']):
                 return filter_input(INPUT_GET, $name, FILTER_SANITIZE_STRING);
             default:            
                 $params = json_decode(file_get_contents('php://input'), true);

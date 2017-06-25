@@ -1,10 +1,14 @@
 <?php 
-//header('Content-Type: text/html; charset=utf8');
+header('Content-Type: text/html; charset=utf8');
 
+/**
+ * Файл загрузки базовыйх функций, автолоадера и конфигурации.
+ * Конфигурация базы данных находится в файле config/bootstrap.php
+ */
 require_once "config/bootstrap.php";
 
-// create tables into mysql
+// Файл создания таблицы с статьями
 require VENDOR . "php-mysql-migration/index.php";
 
-// run APP
+// Запуск приложения
 require APP . "router.php";

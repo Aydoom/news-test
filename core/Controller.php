@@ -7,11 +7,11 @@ class Controller {
     public $models = [];
 
     public $view;
-    public $redirect;
 
     public $name;
     public $action;
 
+    
     public function __construct($action) {
 
         $this->name = substr(strtolower(array_pop(
@@ -20,37 +20,39 @@ class Controller {
         $this->view = $this->name . DS . $action;
     }
 
+    
     public function _set($name, $value) {
         $this->data[$name] = $value;
     }
 
+    
     public function _get($name) {
         return $this->data[$name];
     }
 
+    
     public function before() {
         
         return true;
     }
 
+    
     public function isPost() {
         $method = filter_input(INPUT_POST, 'method', FILTER_DEFAULT);
         return (!empty($_POST) && strtolower($method) !== "put");
     }
+    
     
     public function isPut() {
         $method = filter_input(INPUT_POST, 'method', FILTER_DEFAULT);
         return (strtolower($method) === "put");
     }
     
+    
     public function &loadModel($modelName) {
         $className = 'app\\Model\\' . ucfirst($modelName) . "Model";
         $this->models[$modelName] = new $className();
         
         return $this->models[$modelName];
-    }
-    
-    public function redirect($uri) {
-        $this->redirect = $uri;
     }
 }

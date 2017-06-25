@@ -25,7 +25,7 @@ newsApp.controller('newsCtrl', function($scope, $http){
                 search: $scope.search
             }
             }).then(function(data){
-                /*$scope.data.data = data.data;*/
+                //console.log(data.data);
 
                 for(var i = 0; i < data.data.length; i++) {
                     var a = data.data[i];
@@ -39,11 +39,13 @@ newsApp.controller('newsCtrl', function($scope, $http){
         });
     };
     
-    $scope.createNews = function() {
-        $scope.form.keywords = $scope.form.keywords_str.split(",")
-                .map(function(s) { return s.trim(); });
-            
-        delete $scope.form.keywords_str;
+    $scope.createNews = function() {        
+        if ($scope.form.keywords_str !== undefined) {
+            $scope.form.keywords = $scope.form.keywords_str.split(",")
+                    .map(function(s) { return s.trim(); });
+
+            delete $scope.form.keywords_str;
+        }
         
         $http.put('news', {
             params:{
@@ -54,15 +56,18 @@ newsApp.controller('newsCtrl', function($scope, $http){
                 $scope.articles = [];
                 $scope.hideForm();
                 $scope.loadNews();
-            }, function(data){
+                alert('Добавлено успешно!');
+            }, function(){
+                alert('Не удалось добавить!');
         });
     };
     
     $scope.updateNews = function(index) {
-        $scope.form.keywords = $scope.form.keywords_str.split(",")
-                        .map(function(s) { return s.trim(); });
-            
-        delete $scope.form.keywords_str;
+        
+        if ($scope.form.keywords_str !== undefined) {
+            $scope.form.keywords = $scope.form.keywords_str.split(",")
+                            .map(function(s) { return s.trim(); });
+        }
         
         $http.post('news', {
             params:{
@@ -71,7 +76,10 @@ newsApp.controller('newsCtrl', function($scope, $http){
             }).then(function(data){
                 $scope.articles[index] = data.data;
                 $scope.hideForm();
-            }, function(data){
+                delete $scope.form.keywords_str;
+                alert('Изменено успешно!');
+            }, function(){
+                alert('Не удалось изменить!');
         });
     };
     
@@ -82,9 +90,10 @@ newsApp.controller('newsCtrl', function($scope, $http){
                 id: id
             }
             }).then(function(data){
-                console.log(data.data);
                 $scope.articles.splice(index, 1);
-            }, function(data){
+                alert('Удалено успешно!');
+            }, function(){
+                alert('Не удалось удалить!');
         });
     };
     
@@ -111,7 +120,7 @@ newsApp.controller('newsCtrl', function($scope, $http){
         
         $scope.titleForm = "Редактировать новость: \"" 
                 + $scope.articles[index].title + "\"";
-        $scope.btnSave = "Изменить";
+        $('.btn-update').show().siblings('.btn-create').hide();
         $scope.isShowForm = true;
     };
     
@@ -125,6 +134,8 @@ newsApp.controller('newsCtrl', function($scope, $http){
     
     $scope.showEmptyForm = function() {
         $scope.form = {};
+        $('.btn-create').show().siblings('.btn-update').hide();
+
         $scope.showForm();
         
         $scope.titleForm = "Добавить новость";
@@ -155,5 +166,5 @@ newsApp.controller('newsCtrl', function($scope, $http){
         $scope.page = 1;
         $scope.articles = [];
         $scope.loadNews();
-    };
+    };   
 });
